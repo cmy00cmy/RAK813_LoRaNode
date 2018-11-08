@@ -38,11 +38,17 @@
   
   The firmware support:
   
-   BLE
+   BLE5.0
   
-   Accelerate sensor 
+   Accelerate sensor/GPS/temperature sensor/humidity sensor/LCD
   
-   2 reserved button(SW1 and SW2) for user definition
+   2 reserved button(SW1 and SW2) and 2 LEDs for user definition 
+  
+   LoRa access: OTAA and APB
+  
+   power supply: micro usb or battery(individual)
+  
+  More details are shown in \RAK813_LoRaNode\Doc\RAK815(RAK813 BreakBoard) Datasheet V1.1.pdf
   
   
 **3. How to use**
