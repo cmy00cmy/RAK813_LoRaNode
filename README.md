@@ -2,7 +2,7 @@
 
 **1. Overview**
 
-  The project is for RAK815(RAK813 breakboard), as a LoRa node. The components are below:
+  The project is for RAK815(RAK813 breakboard), as a LoRa node. The features of RAK813 module are below:
  
    Long Range LoraWAN operating in the 433MHz, 470MHz, 863 MHz or 928 MHz frequency bands
   
