@@ -38,7 +38,7 @@
   
   The firmware support:
   
-   BLE5.0
+   BLE
   
    Accelerate sensor/GPS/temperature sensor/humidity sensor/LCD
   
