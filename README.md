@@ -39,18 +39,24 @@
   The firmware support:
   
    BLE
+  
    Accelerate sensor 
+  
    2 reserved button(SW1 and SW2) for user definition
+  
   
 **3. How to use**
 
   3.1 Project
+  
   The path is :....\RAK813_LoRaNode\Keil5
   
   3.2 Sdk download
+  
   Use nRFgo Studio to download sdk, at .....\RAK813_LoRaNode\nRF_Lib\components\softdevice\s132\hex\s132_nrf52_5.0.0_softdevice.hex
   
   3.3 Build project and flash to board
+  
   You can do some adaption before compile like frequency bands or OTAA or ABP parameters of LoRa.
   
   More details are shown in \RAK813_LoRaNode\Doc\RAK815(RAK813 BreakBoard) User Manual V1.1.pdf
