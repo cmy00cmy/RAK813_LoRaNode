@@ -1,3 +1,10 @@
+***************************************************************************************************************************************
+**2018.11.9 Update log：**
+
+1. Add scan demo. Before use, copy the file under Scan_Demo to LoRaWAN_Demo and replace.
+2. Test details of scan demo is in \RAK813_LoRaNode\Doc\RAK815(RAK813 BreakBoard) User Manual V1.1.pdf
+
+***************************************************************************************************************************************
 # RAK813_LoRaNode
 
 **1. Overview**
