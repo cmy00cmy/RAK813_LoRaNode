@@ -982,7 +982,7 @@ void nRF_lora_init()
     lora_init(&g_lora_cfg);
     printf("LoRa init success.\r\n");
 }
-
+extern void app_send();
 int main(void)
 {
     uint32_t err_code;
@@ -999,7 +999,7 @@ int main(void)
     // Enter main loop.
     while(1)
     {
-        lora_process();
+        //lora_process();
         
         if (!NRF_LOG_PROCESS())
         {
@@ -1010,21 +1010,21 @@ int main(void)
             u_fs_write_lora_cfg(&g_lora_cfg);
             loraconfigupdataflg = false;
         }     
-				b_type = Check_Button_Status();
-				if(b_type == BUTTON_SW1)
-				{
-						printf("button sw1 pressed!\r\n");
-					  prepare_frame();
-				}
-				else if(b_type == BUTTON_SW2)
-				{
-						printf("button sw2 pressed!\r\n");
-					  //do your task
-				}
-				else
-				{
-						//nothing to do
-				}
+//				b_type = Check_Button_Status();
+//				if(b_type == BUTTON_SW1)
+//				{
+//						printf("button sw1 pressed!\r\n");
+//					  prepare_frame();
+//				}
+//				else if(b_type == BUTTON_SW2)
+//				{
+//						printf("button sw2 pressed!\r\n");
+//					  //do your task
+//				}
+//				else
+//				{
+//						//nothing to do
+//				}
     }
 }
 

@@ -132,7 +132,7 @@ typedef enum button_index
 	  BUTTON_SW2,
 	  BUTTON_INVALID,
 }button_index;
-#define BUTTON_SENSITIVITY 150
+#define BUTTON_SENSITIVITY 100
 /*!
  * LED GPIO pins objects
  */

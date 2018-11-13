@@ -340,9 +340,13 @@ void dump_hex2str(uint8_t *buf , uint8_t len)
     }
     printf("\r\n");
 }
-
+void app_send();
 void prepare_bluetooth_frame(uint8_t data,uint8_t index,uint16_t len)
 {
+	
+	int x = 0;
+	int y = 0;
+	int z = 0;
 	//collect data to send buffer
 	if(index != len-1)
 	{
@@ -350,12 +354,29 @@ void prepare_bluetooth_frame(uint8_t data,uint8_t index,uint16_t len)
 	}
 	else 
 	{
-		AppData2[index] = data;
-    	printf("\r\ntransparent transmission of ble data\r\n");
-    	memset(AppData,0,LORAWAN_APP_DATA_MAX_SIZE);
-    	memcpy(AppData,AppData2,strlen(AppData2));
-    	memset(AppData2,0,LORAWAN_APP_DATA_MAX_SIZE);
-    	MibRequestConfirm_t mibReq;
+		  AppData2[index] = data;
+
+		  if(strcmp("Acc",AppData2)==0)
+			{
+					printf("local upload of accelerate data\r\n");
+				  get_lis3dh_data(&x, &y, &z);
+			  	memset(AppData2,0,LORAWAN_APP_DATA_MAX_SIZE);
+			    sprintf(AppData2,"Accelerate:%d,%d,%d",x,y,z);
+				  printf("accelerate:%s\r\n",AppData2);
+				  printf("accelerate len:%d\r\n",strlen(AppData2));
+				  AppDataSize = strlen(AppData2);
+				  memcpy(AppData,AppData2,strlen(AppData2));
+			}
+			else
+			{
+			    printf("\r\ntransparent transmission of ble data\r\n");
+		      printf("ble data: %s\r\n",AppData2);
+	   	    printf("ble data len: %d\r\n",len);
+    	    memcpy(AppData,AppData2,len);
+    	    memset(AppData2,0,LORAWAN_APP_DATA_MAX_SIZE);
+		      AppDataSize = len;
+			}
+      	MibRequestConfirm_t mibReq;
         LoRaMacStatus_t status;
         
         mibReq.Type = MIB_NETWORK_JOINED;
@@ -365,44 +386,8 @@ void prepare_bluetooth_frame(uint8_t data,uint8_t index,uint16_t len)
         {
             if( mibReq.Param.IsNetworkJoined == true )
             {
-                DeviceState = DEVICE_STATE_SEND;
-                NextTx = true;
+                app_send();
             }
-            else
-            {
-                DeviceState = DEVICE_STATE_JOIN;
-            }
-        }
-	}
-}
-void prepare_frame()
-{	
-	int x = 0;
-	int y = 0;
-	int z = 0;
-	printf("local upload of accelerate data\r\n");
-	//collect data to send buffer
-    get_lis3dh_data(&x, &y, &z);
-	memset(AppData2,0,LORAWAN_APP_DATA_MAX_SIZE);
-	sprintf(AppData2,"Accelerate:%d,%d,%d",x,y,z);
-	memcpy(AppData,AppData2,strlen(AppData2));
-    memset(AppData2,0,LORAWAN_APP_DATA_MAX_SIZE);	
-	MibRequestConfirm_t mibReq;
-    LoRaMacStatus_t status;
-    
-    mibReq.Type = MIB_NETWORK_JOINED;
-    status = LoRaMacMibGetRequestConfirm( &mibReq );
-
-    if( status == LORAMAC_STATUS_OK )
-    {
-        if( mibReq.Param.IsNetworkJoined == true )
-        {
-            DeviceState = DEVICE_STATE_SEND;
-            NextTx = true;
-        }
-        else
-        {
-            DeviceState = DEVICE_STATE_JOIN;
         }
     }
 
@@ -414,7 +399,7 @@ static void PrepareTxFrame( uint8_t port )
     {
       case 2:
         {
-            AppDataSize = strlen(AppData);
+            //AppDataSize = strlen(AppData);
         }
       case 224:
         if( ComplianceTest.LinkCheck == true )
@@ -497,7 +482,7 @@ static bool SendFrame( void )
 */
 static void OnTxNextPacketTimerEvent( void )
 {
-#if 0
+#if 1
     MibRequestConfirm_t mibReq;
     LoRaMacStatus_t status;
     
@@ -829,22 +814,22 @@ LoRaMacPrimitives_t LoRaMacPrimitives;
 LoRaMacCallback_t LoRaMacCallbacks;
 MibRequestConfirm_t mibReq;
 
+void region_init();
+
 void lora_init()
 {
     BoardInitMcu( );
-    DeviceState = DEVICE_STATE_INIT;
+    //DeviceState = DEVICE_STATE_INIT;
+	  region_init();
 }
 
 
 lora_cfg_t *lora_cfg=&g_lora_cfg;
 
-void lora_process()
+
+void region_init()
 {
-    switch( DeviceState )
-    {
-      case DEVICE_STATE_INIT:
-        {
-            LoRaMacPrimitives.MacMcpsConfirm = McpsConfirm;
+					  LoRaMacPrimitives.MacMcpsConfirm = McpsConfirm;
             LoRaMacPrimitives.MacMcpsIndication = McpsIndication;
             LoRaMacPrimitives.MacMlmeConfirm = MlmeConfirm;
             LoRaMacCallbacks.GetBatteryLevel = BoardGetBatteryLevel;
@@ -871,7 +856,7 @@ void lora_process()
 #else
 #error "Please define a region in the compiler options."
 #endif
-            TimerInit( &TxNextPacketTimer, OnTxNextPacketTimerEvent );
+            //TimerInit( &TxNextPacketTimer, OnTxNextPacketTimerEvent );
             
             //TimerInit( &Led1Timer, OnLed1TimerEvent );
             //TimerSetValue( &Led1Timer, 2000 );   
@@ -884,13 +869,9 @@ void lora_process()
             mibReq.Param.EnablePublicNetwork = LORAWAN_PUBLIC_NETWORK;
             LoRaMacMibSetRequestConfirm( &mibReq );
             
-            DeviceState = DEVICE_STATE_JOIN;
+            //DeviceState = DEVICE_STATE_JOIN;
             NRF_LOG_INFO("goto to join");
-            break;
-        }
-      case DEVICE_STATE_JOIN:
-        {
-#if( OVER_THE_AIR_ACTIVATION != 0 )
+						#if( OVER_THE_AIR_ACTIVATION != 0 )
             MlmeReq_t mlmeReq;
             
             // Initialize LoRaMac device unique ID
@@ -935,7 +916,7 @@ void lora_process()
                 status = LoRaMacMlmeRequest( &mlmeReq );
                 NRF_LOG_INFO("OTAA Join Start...%d \r\n", status);
             }
-            DeviceState = DEVICE_STATE_SLEEP;
+            //DeviceState = DEVICE_STATE_SLEEP;
             NRF_LOG_INFO("goto to sleep");
 #else
             // Choose a random device address if not already defined in Commissioning.h
@@ -977,51 +958,14 @@ void lora_process()
             mibReq.Param.IsNetworkJoined = true;
             LoRaMacMibSetRequestConfirm( &mibReq );
             
-            DeviceState = DEVICE_STATE_SEND;
+            //DeviceState = DEVICE_STATE_SEND;
 #endif
-            break;
-        }
-      case DEVICE_STATE_SEND:
-        {
-            if( NextTx == true )
-            {
-                PrepareTxFrame( 2 );
-                NextTx = SendFrame( );
-            }
-            if( ComplianceTest.Running == true )
-            {
-                // Schedule next packet transmission
-                TxDutyCycleTime = 5000; // 5000 ms
-            }
-            else
-            {
-                // Schedule next packet transmission
-                TxDutyCycleTime = APP_TX_DUTYCYCLE + randr( -APP_TX_DUTYCYCLE_RND, APP_TX_DUTYCYCLE_RND );
-            }
-            DeviceState = DEVICE_STATE_CYCLE;
-            break;
-        }
-      case DEVICE_STATE_CYCLE:
-        {
-            DeviceState = DEVICE_STATE_SLEEP;
             
-            // Schedule next packet transmission
-            TimerSetValue( &TxNextPacketTimer, TxDutyCycleTime );
-            TimerStart( &TxNextPacketTimer );
-            break;
-        }
-      case DEVICE_STATE_SLEEP:
-        {
-            // Wake up through events
-            TimerLowPowerHandler( );
-            break;
-        }
-      default:
-        {
-            DeviceState = DEVICE_STATE_INIT;
-            break;
-        }
-    }
+}
+void app_send()
+{
+     PrepareTxFrame( 2 );
+     NextTx = SendFrame( );
 }
 
 
