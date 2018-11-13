@@ -1,9 +1,7 @@
 ***************************************************************************************************************************************
 **2018.11.13 Update log：**
 
-1. Debug US915, button exists some problem and in debugging. Now all data can be sent to gateway via BLE. If send "Acc", moudle will send accelerate
-
-data. Or the other data will be unvarnished transmission. 
+1. Debug US915, button exists some problem and in debugging. Now all data can be sent to gateway via BLE. If send "Acc", moudle will send accelerate data. Or the other data will be unvarnished transmission. 
 
 2. Test details of scan demo is in \RAK813_LoRaNode\Doc\RAK815(RAK813 BreakBoard) User Manual V1.1.pdf
 
