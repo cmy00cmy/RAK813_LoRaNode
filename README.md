@@ -1,4 +1,11 @@
 ***************************************************************************************************************************************
+**2018.11.14 Update log：**
+
+1. Fix button problem. There are three buttons on the board, sw1,sw2,sw3. Sw3 if for reset distinctively and sw1, sw2 are left to users.
+You can do own work here instead of the log print now.
+
+***************************************************************************************************************************************
+***************************************************************************************************************************************
 **2018.11.13 Update log：**
 
 1. Debug US915, button exists some problem and in debugging. Now all data can be sent to gateway via BLE. If send "Acc", moudle will send accelerate data. Or the other data will be unvarnished transmission. 
