@@ -1003,28 +1003,28 @@ int main(void)
         
         if (!NRF_LOG_PROCESS())
         {
-            power_manage();
+            //power_manage();
         }
         if(loraconfigupdataflg)
         {
             u_fs_write_lora_cfg(&g_lora_cfg);
             loraconfigupdataflg = false;
         }     
-//				b_type = Check_Button_Status();
-//				if(b_type == BUTTON_SW1)
-//				{
-//						printf("button sw1 pressed!\r\n");
-//					  prepare_frame();
-//				}
-//				else if(b_type == BUTTON_SW2)
-//				{
-//						printf("button sw2 pressed!\r\n");
-//					  //do your task
-//				}
-//				else
-//				{
-//						//nothing to do
-//				}
+				b_type = Check_Button_Status();
+				if(b_type == BUTTON_SW1)
+				{
+						printf("button sw1 pressed!\r\n");
+					  //prepare_frame();
+				}
+				else if(b_type == BUTTON_SW2)
+				{
+						printf("button sw2 pressed!\r\n");
+					  //do your task
+				}
+				else
+				{
+						//nothing to do
+				}
     }
 }
 
