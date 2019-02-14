@@ -74,7 +74,7 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
-
+#include "nrf_drv_gpiote.h"
 //#include "nrf_ble_qwr.h"
 //#include "nrf_ble_qwrs.h"
 
@@ -980,6 +980,7 @@ void nRF_lora_init()
     u_fs_read_lora_cfg(&g_lora_cfg);
     u_fs_check_lora_cfg(&g_lora_cfg);
     lora_init(&g_lora_cfg);
+		nrf_gpio_cfg_sense_input(LIS3DH_INT1_PIN, NRF_GPIO_PIN_PULLDOWN, NRF_GPIO_PIN_SENSE_HIGH);
     printf("LoRa init success.\r\n");
 }
 extern void app_send();

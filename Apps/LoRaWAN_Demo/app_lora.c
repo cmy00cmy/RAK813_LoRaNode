@@ -25,6 +25,7 @@ Maintainer: Miguel Luis and Gregory Cristian
 #include "Commissioning.h"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "nrf_delay.h"
 #include "nrf_log_default_backends.h"
 #include "custom_board.h"
 #include "lis3dh_driver.h"
@@ -393,6 +394,28 @@ void prepare_bluetooth_frame(uint8_t data,uint8_t index,uint16_t len)
 
 }
 
+void low_power_send(void)
+{
+		 AppData[0] = '1';
+		 AppData[1] = '2';
+		 AppData[1] = '3';
+		 AppDataSize = 3;
+	
+     MibRequestConfirm_t mibReq;
+     LoRaMacStatus_t status;
+     
+     mibReq.Type = MIB_NETWORK_JOINED;
+     status = LoRaMacMibGetRequestConfirm( &mibReq );
+    
+     if( status == LORAMAC_STATUS_OK )
+     {
+         if( mibReq.Param.IsNetworkJoined == true )
+         {
+             app_send();
+         }
+     }
+
+}
 static void PrepareTxFrame( uint8_t port )
 {
     switch( port )
@@ -780,6 +803,10 @@ static void MlmeConfirm( MlmeConfirm_t *mlmeConfirm )
                 // Status is OK, node has joined the network
                 DeviceState = DEVICE_STATE_SEND;
                 printf("OTAA Join Success \r\n");
+								low_power_send();
+								nrf_delay_ms(2000);
+							  SX1276SetSleep( );
+							  (void)sd_power_system_off();
             }
             else
             {

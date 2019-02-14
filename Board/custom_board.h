@@ -67,10 +67,10 @@
 */
 #define             LIS3DH_TWI_SCL_PIN                     16
 #define             LIS3DH_TWI_SDA_PIN                     15
-#define             LIS3DH_INT1_PIN                        25
+#define             LIS3DH_INT1_PIN                        4
 #define 	    LIS3DH_RES_PIN			   26
-#define             LIS3DH_INT2_PIN                        27
-
+#define             LIS3DH_INT2_PIN                        3
+#define 			LIS3DH_INT1_SENS				5    // [0-31]
 /*
 		lis2mdl PIN Assignment
 		LIS2MDL_SCL		--	P0.11
