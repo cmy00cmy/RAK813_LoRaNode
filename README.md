@@ -1,4 +1,14 @@
 ***************************************************************************************************************************************
+**2019.2.14 Update log：**
+
+1. Add sleep mode and power consumption is less than 1.8mA. When config the lora parameter and restart, node will send test data "123" to your server and go to sleep 2s later. If want to wake up moudle, just shake it and the acc will generate interrupt to reset the moudle repeatly the send work.
+
+2. All debug functions including log are turned off in sleep mode.
+
+3. If want to change the sensitivity of acc interrupt, change the macro LIS3DH_INT1_SENS in custom_board.h 
+
+***************************************************************************************************************************************
+***************************************************************************************************************************************
 **2018.11.14 Update log：**
 
 1. Fix button problem. There are three buttons on the board, sw1,sw2,sw3. Sw3 if for reset distinctively and sw1, sw2 are left to users.
