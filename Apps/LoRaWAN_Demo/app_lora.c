@@ -804,9 +804,9 @@ static void MlmeConfirm( MlmeConfirm_t *mlmeConfirm )
                 DeviceState = DEVICE_STATE_SEND;
                 printf("OTAA Join Success \r\n");
 								low_power_send();
-								nrf_delay_ms(2000);
-							  SX1276SetSleep( );
-							  (void)sd_power_system_off();
+								//nrf_delay_ms(2000);
+							  //SX1276SetSleep( );
+							 // (void)sd_power_system_off();
             }
             else
             {
