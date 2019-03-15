@@ -141,7 +141,7 @@ bool loraconfigupdataflg = false;
 static Ble_scanRsp_t m_bls_scan_rsp[10];
 static uint8_t rspNum = 0;
 
-
+int flag = 0;
 /**@brief Parameters used when scanning. */
 static ble_gap_scan_params_t const m_scan_params =
 {
@@ -403,7 +403,11 @@ static void nus_data_handler(ble_nus_evt_t * p_evt)
                 do
                 {   
                     err_code = app_uart_put(p_evt->params.rx_data.p_data[i]);
-					prepare_bluetooth_frame(p_evt->params.rx_data.p_data[i],i,p_evt->params.rx_data.length);
+									  if(p_evt->params.rx_data.p_data[i]=='1')
+										{
+												flag=1;
+										}
+					//prepare_bluetooth_frame(p_evt->params.rx_data.p_data[i],i,p_evt->params.rx_data.length);
                     if ((err_code != NRF_SUCCESS) && (err_code != NRF_ERROR_BUSY))
                     {
                         NRF_LOG_ERROR("Failed receiving NUS message. Error 0x%x. ", err_code);
@@ -945,6 +949,25 @@ button_index Check_Button_Status()
     return BUTTON_INVALID;       
 }
 
+uint32_t i2c_drv_init(void)
+{
+    uint32_t err_code;
+    
+    const nrf_drv_twi_config_t twi_lis_config = {
+        .scl                = DEV_TWI_SCL_PIN,
+        .sda                = DEV_TWI_SDA_PIN,
+        .frequency          = NRF_TWI_FREQ_400K,
+        .interrupt_priority = APP_IRQ_PRIORITY_HIGHEST
+    };
+    
+    err_code = rak_i2c_init(&twi_lis_config);
+    if(err_code != NRF_SUCCESS)
+    {
+        return err_code;
+    }
+    
+    return NRF_SUCCESS;
+}
 void nRF_hardware_init()
 {
     uint32_t err_code;
@@ -952,11 +975,12 @@ void nRF_hardware_init()
     err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
     
+		i2c_drv_init();
     uart_init();
     log_init();
-		lis3dh_twi_init();
-		lis3dh_init();
     buttons_leds_init(&erase_bonds);
+ 	  gps_setup();
+		lis3dh_init();
     printf("nRE Hardware init success\r\n");
 }
 
@@ -984,11 +1008,17 @@ void nRF_lora_init()
     printf("LoRa init success.\r\n");
 }
 extern void app_send();
+extern uint8_t GpsDataBuffer[512];
 int main(void)
 {
     uint32_t err_code;
     button_index b_type = BUTTON_INVALID;
-    
+    int x = 0;
+	  int y = 0;
+	  int z = 0;
+	  float tem = 0;
+	  float hum = 0;
+	  peripherals_data per_data = {0};
     nRF_hardware_init();
     nRF_BLE_init();
     nRF_lora_init();
@@ -1026,6 +1056,39 @@ int main(void)
 				{
 						//nothing to do
 				}
+						if(flag ==0)
+						{
+							  low_power_send();
+								nrf_delay_ms(2000);
+						}
+						if(flag==1)
+						{
+						printf("+++++++++++sensor test begin+++++++++++!\r\n");
+					  // acc data
+					  get_lis3dh_data(&x,&y,&z);
+					  printf("acc data :%d,%d,%d!\r\n",x,y,z);
+            if (Sht31_startMeasurementHighResolution() == 0)
+            {
+                //Sht31_startMeasurementLowResolution();
+                Sht31_readMeasurement_ft(&(per_data.HT_humidity),&(per_data.HT_temperature));
+                printf("temperature:%.1fC , humidity¡êo%.1f%\r\n\0",per_data.HT_temperature,per_data.HT_humidity);
+            }
+						Max7GpsReadDataStream();
+						//Max7GpsReadDataBuffer();
+						//printf("%s\r\n",GpggaSentenceBuffer);
+            if (GpsParseGpsData(GpsDataBuffer, 512))
+            {
+                double lat=0;
+							  double lon = 0;
+                uint8_t ret = GpsGetLatestGpsPositionDouble(&lat, &lon);
+                per_data.gps_altitude = GpsGetLatestGpsAltitude();
+                if(ret == SUCCESS )
+                {
+                    printf("gps lat=%f , gps lot=%f \n", lat, lon);
+                }
+            }
+						nrf_delay_ms(100);
+					}
     }
 }
 
