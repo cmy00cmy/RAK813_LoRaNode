@@ -1,3 +1,10 @@
+
+***************************************************************************************************************************************
+**2019.3.15 Update log：**
+
+1. Add acc, gps, temperature&humidity sensor test code. It will send lora data after start. When send '1' to it via ble, it will stop lora send and test sensors.
+
+2. Remove sleep mode transitorily. User can open it with api "(void)sd_power_system_off(void)" in main loop in main.c.  
 ***************************************************************************************************************************************
 **2019.2.14 Update log：**
 

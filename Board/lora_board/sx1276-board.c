@@ -43,7 +43,8 @@ const struct Radio_s Radio =
 void SX1276IoInit( void )
 {
     Gpio_t ioPin;
-
+		memset(&ioPin,0,sizeof(ioPin));
+		memset(&SX1276,0,sizeof(SX1276));	
     SpiInit( &SX1276.Spi, RADIO_MOSI, RADIO_MISO, RADIO_SCK, RADIO_NSS );
 
     GpioInit( &SX1276.Reset, RADIO_RESET, PIN_OUTPUT, PIN_OPEN_DRAIN, PIN_NO_PULL, 1 );
